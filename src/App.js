@@ -1,12 +1,12 @@
-import React from 'react';
-import STORE from './store';
-import List from './List';
+import React, { Component } from 'react'
+import List from './List'
+import STORE from './store'
 
-import './App.css';
+import './App.css'
 
 const newRandomCard = () => {
-  const id = Math.random().toString(36).substring(2, 4)
-    + Math.random().toString(36).substring(2, 4);
+  const id = Math.random().toString(36).substring(2, 4) + 
+    Math.random().toString(36).substring(2, 4);
   return {
     id,
     title: `Random Card ${id}`,
@@ -15,65 +15,84 @@ const newRandomCard = () => {
 }
 
 function omit(obj, keyToOmit) {
-  // let {[keyToOmit]: _, ...rest} = obj;
   return Object.entries(obj).reduce(
-    (newObject, [key, value]) => 
-      key === keyToOmit ? newObject : {...newObject, [key]: value}
-      , {}
-  )};
+    (newObj, [key, value]) =>
+      key === keyToOmit ? newObj : {...newObj, [key]: value}, 
+    {}
+  );
+}
 
 
-class App extends React.Component {
+class App extends Component {
   state = {
-    store: STORE
+    store: STORE,
   };
 
-  handleDeleteClicked = (cardId) => {
-    const { allCards, lists } = this.state.store;
+  handleDelete = (cardId) => {
+    const { lists, allCards } = this.state.store;
 
+    //filtered
     const newListSet = lists.map(list => ({
       ...list,
-      cardIds: list.cardIds.filter(id => id !==cardId)
-    })
-    )
-    //filtered
+      cardIds: list.cardIds.filter(id => id !== cardId)
+    }));
 
-
-    const newCardSet = omit(allCards, cardId);
     //omit
-    
+    const newCardSet = omit(allCards, cardId);
+
     this.setState({
       store: {
-        list: newListSet,
+        lists: newListSet,
         allCards: newCardSet
       }
     })
-    
   };
 
-  handleAddClicked = () => {
+  handleAdd = (listId) => {
+    const newCard = newRandomCard()
 
-  }
+    const newListSet = this.state.store.lists.map(list => {
+      if (list.id === listId) {
+        return {
+          ...list,
+          cardIds: [...list.cardIds, newCard.id]
+        };
+      }
+      return list;
+    })
+
+    this.setState({
+      store: {
+        lists: newListSet,
+        allCards: {
+          ...this.state.store.allCards,
+          [newCard.id]: newCard
+        }
+      }
+    })
+  };
 
   render() {
-    const { store } = this.state;
-    const lists = STORE.lists.map(list => (
-      <List
-        key={list.id}
-        id={list.id}
-        header={list.header}
-        cards={list.cardIds.map(id => STORE.allCards[id])}
-      />
-    ))
-
+    const { store } = this.state
+    console.log(store);
     return (
       <main className='App'>
         <header className='App-header'>
-          <h1>Trelloyes!</h1>
-          <div className='App-list'>
-            {lists}
-          </div>
+          <h1>Trelloyes!</h1>        
         </header>
+          <div className='App-list'>
+            {store.lists.map(list => (
+              <List
+                key={list.id}
+                id={list.id}
+                header={list.header}
+                cards={list.cardIds.map(id => 
+                  store.allCards[id])}
+                onClickDelete={this.handleDelete}
+                onClickAdd={this.handleAdd}
+              />
+            ))}
+          </div>
       </main>
     );
   }
