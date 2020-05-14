@@ -9,7 +9,7 @@ export default function Card(props) {
                 type='button' 
                 onClick={() => props.handleDeleteClicked(props.id)}
                 >
-                    Delete
+                Delete
                 </button>
                 <h3 className='Card-title'>{this.props.title}</h3>
                 <p className='Card-content'>{this.props.content}</p>

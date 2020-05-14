@@ -16,12 +16,50 @@ const newRandomCard = () => {
 
 function omit(obj, keyToOmit) {
   // let {[keyToOmit]: _, ...rest} = obj;
-  return rest;
+  return Object.entries(obj).reduce(
+    (newObject, [key, value]) => {
+      if (key === keyToOmit) {
+      newObject
+      } else {
+        ...newObject, [key]: value]
+    }  
+  )
 }
 
 
-
 class App extends React.Component {
+  state = {
+    store: STORE
+  };
+
+  handleDeleteClicked = (cardId) => {
+    const { allCards, lists } = this.state.store;
+
+    const newListSet = lists.map(list => ({
+      ...list,
+      cardIds: list.cardIds.filter(id => id !==cardId)
+    })
+    )
+    //filtered
+
+
+    const newCardSet = omit(allCards, cardId);
+    //omit
+    
+    this.setState({
+      store: {
+        list: newListSet,
+        allCards: newCardSet
+      }
+    })
+    
+  };
+
+  handleAddClicked = () => {
+
+  }
+
+
   const lists = STORE.lists.map(list => (
     <List 
     key={list.id} 
