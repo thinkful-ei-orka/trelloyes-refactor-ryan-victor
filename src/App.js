@@ -17,14 +17,10 @@ const newRandomCard = () => {
 function omit(obj, keyToOmit) {
   // let {[keyToOmit]: _, ...rest} = obj;
   return Object.entries(obj).reduce(
-    (newObject, [key, value]) => {
-      if (key === keyToOmit) {
-      newObject
-      } else {
-        ...newObject, [key]: value]
-    }  
-  )
-}
+    (newObject, [key, value]) => 
+      key === keyToOmit ? newObject : {...newObject, [key]: value}
+      , {}
+  )};
 
 
 class App extends React.Component {
@@ -59,25 +55,28 @@ class App extends React.Component {
 
   }
 
+  render() {
+    const { store } = this.state;
+    const lists = STORE.lists.map(list => (
+      <List
+        key={list.id}
+        id={list.id}
+        header={list.header}
+        cards={list.cardIds.map(id => STORE.allCards[id])}
+      />
+    ))
 
-  const lists = STORE.lists.map(list => (
-    <List 
-    key={list.id} 
-    id={list.id}
-    header={list.header} 
-    cards={list.cardIds.map(id => STORE.allCards[id])} 
-    />
-  ))
-  return (
-    <main className='App'>
-      <header className='App-header'>
-        <h1>Trelloyes!</h1>
-        <div className='App-list'>
-          {lists}
-        </div>
-      </header>
-    </main>
-  );
+    return (
+      <main className='App'>
+        <header className='App-header'>
+          <h1>Trelloyes!</h1>
+          <div className='App-list'>
+            {lists}
+          </div>
+        </header>
+      </main>
+    );
+  }
 }
 
 export default App;
