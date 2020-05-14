@@ -2,14 +2,17 @@ import React from 'react';
 
 import './Card.css';
 
-export default class Card extends React.Component {
-    render() {
+export default function Card(props) {
         return (
             <div className='Card'>
-                <button type='button'>delete</button>
+                <button 
+                type='button' 
+                onClick={() => props.handleDeleteClicked(props.id)}
+                >
+                    Delete
+                </button>
                 <h3 className='Card-title'>{this.props.title}</h3>
                 <p className='Card-content'>{this.props.content}</p>
             </div>
         );
     }
-}

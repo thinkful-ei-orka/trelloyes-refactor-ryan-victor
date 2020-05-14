@@ -1,5 +1,3 @@
-
-
 const STORE = {
     lists: [
       {
